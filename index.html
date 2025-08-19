@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Наш путь — С Днём Рождения!</title>
+  <meta name="description" content="Длинный мобильный таймлайн: от первого знакомства до сегодня. В конце — тёплое поздравление." />
+  <meta name="theme-color" content="#111827" />
+  <style>
+    /* ===== CSS VARIABLES & RESET ===== */
+    :root{
+      --bg:#0b0f17;          /* фоновый цвет (тёмная тема по умолчанию) */
+      --card:#111827;        /* карточки */
+      --text:#e5e7eb;        /* основной текст */
+      --muted:#9ca3af;       /* вторичный текст */
+      --accent:#60a5fa;      /* акцент (синий) */
+      --accent-2:#a78bfa;    /* акцент 2 (фиолетовый) */
+      --good:#34d399;        /* позитив */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:22px;
+      --pad:16px;
+      --maxw:860px;
+      --gap:16px;
+    }
+
+    /* Светлая тема (переключается из JS добавлением класса .light к body) */
+    body.light{
+      --bg:#f9fafb;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --accent:#2563eb;
+      --accent-2:#7c3aed;
+      --shadow: 0 8px 20px rgba(0,0,0,.08);
+    }
+
+    *,*::before,*::after{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{ margin:0; background:var(--bg); color:var(--text); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; line-height:1.6; }
+    img{ max-width:100%; display:block; border-radius:16px }
+    a{ color:inherit }
+    .wrap{ width:min(100%, var(--maxw)); margin:0 auto; padding:0 var(--pad) 120px }
+
+    /* ===== TOP BAR with progress ===== */
+    .topbar{ position:sticky; top:0; z-index:50; backdrop-filter:saturate(120%) blur(12px); background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.15)); border-bottom:1px solid rgba(255,255,255,.06) }
+    body.light .topbar{ background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); border-color:rgba(0,0,0,.06) }
+    .topbar-inner{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px var(--pad) }
+    .logo{ font-weight:800; letter-spacing:.4px; font-size:clamp(16px, 2.8vw, 22px) }
+    .muted{ color:var(--muted); font-size:13px }
+    .progress{ height:3px; background:rgba(255,255,255,.15); position:relative; overflow:hidden }
+    body.light .progress{ background:rgba(0,0,0,.08) }
+    .progress > i{ position:absolute; inset:0 100% 0 0; background:linear-gradient(90deg, var(--accent), var(--accent-2)); transition:inset .15s linear }
+
+    /* ===== HERO ===== */
+    .hero{ position:relative; min-height:72vh; display:grid; place-items:center; overflow:hidden }
+    .stars{ position:absolute; inset:0; background: radial-gradient(1500px 600px at 50% 10%, rgba(96,165,250,.25), transparent 55%), radial-gradient(800px 400px at 10% 80%, rgba(167,139,250,.2), transparent 60%); pointer-events:none }
+    .hero-card{ position:relative; margin-top:12vh; background:var(--card); padding:28px; border-radius:var(--radius); box-shadow:var(--shadow); text-align:center }
+    .hero h1{ margin:0 0 8px; font-size:clamp(24px, 6vw, 44px); line-height:1.15 }
+    .hero p{ margin:6px 0 0 }
+    .chips{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px }
+    .chip{ font-size:12px; padding:6px 10px; border-radius:999px; background:linear-gradient(90deg, rgba(96,165,250,.2), rgba(167,139,250,.2)); border:1px solid rgba(255,255,255,.12) }
+    body.light .chip{ border-color:rgba(0,0,0,.06) }
+    .scroll-cue{ position:absolute; bottom:18px; left:50%; translate:-50% 0; font-size:12px; color:var(--muted) }
+
+    /* ===== TIMELINE ===== */
+    .timeline{ display:grid; gap:28px; margin-top:36px }
+    .chapter{ display:grid; grid-template-columns: 28px 1fr; gap:14px; align-items:stretch }
+    .chapter .dot{ width:12px; height:12px; border-radius:50%; background:var(--muted); position:relative; margin-top:10px }
+    .chapter.active .dot{ background:linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow:0 0 0 6px rgba(96,165,250,.15) }
+    .chapter .line{ position:relative }
+    .chapter .line::before{ content:""; position:absolute; left:10px; top:-20px; bottom:-20px; width:2px; background:rgba(255,255,255,.12) }
+    body.light .chapter .line::before{ background:rgba(0,0,0,.08) }
+    .card{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; overflow:hidden }
+    .time{ font-size:12px; letter-spacing:.3px; color:var(--muted); display:flex; align-items:center; gap:6px }
+    .h2{ font-weight:800; font-size:clamp(18px, 4.6vw, 28px); margin:8px 0 8px }
+    .text{ font-size:clamp(14px, 3.8vw, 18px); opacity:.98 }
+
+    /* Баблы «мысли тогда / сейчас» */
+    .bubbles{ display:grid; gap:10px; margin-top:12px }
+    .bubble{ padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1) }
+    body.light .bubble{ background:rgba(0,0,0,.03); border-color:rgba(0,0,0,.08) }
+    .bubble.me{ border-left:3px solid var(--accent) }
+    .bubble.now{ border-left:3px solid var(--good) }
+
+    /* Галерея */
+    .gallery{ display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:12px }
+
+    /* Цитата */
+    .quote{ border-left:4px solid var(--accent); padding:8px 0 8px 12px; color:var(--muted); font-style:italic; margin-top:8px }
+
+    /* ===== FINAL SECTION ===== */
+    .final{ position:relative; margin-top:38px; display:grid; gap:14px }
+    .final .big{ font-weight:900; font-size:clamp(24px, 6vw, 42px); line-height:1.15; letter-spacing:.2px }
+    .final .type{ min-height:2.4em; border-left:3px solid var(--accent); padding-left:12px; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:6px }
+    .btn{ appearance:none; border:none; cursor:pointer; padding:12px 16px; border-radius:12px; background:linear-gradient(90deg, var(--accent), var(--accent-2)); color:white; font-weight:700; box-shadow:var(--shadow) }
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.15) }
+    body.light .btn.ghost{ border-color:rgba(0,0,0,.12) }
+
+    /* ===== FLOATING CONTROLS ===== */
+    .fab{ position:fixed; right:14px; bottom:18px; display:grid; gap:10px; z-index:70 }
+    .fab button{ width:50px; height:50px; border-radius:14px; background:var(--card); border:1px solid rgba(255,255,255,.12); color:var(--text); display:grid; place-items:center; box-shadow:var(--shadow) }
+    body.light .fab button{ border-color:rgba(0,0,0,.08) }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0 }
+
+    /* ===== ANIMATIONS ===== */
+    .reveal{ opacity:0; transform: translateY(14px); transition: .6s ease opacity, .6s ease transform }
+    .reveal.show{ opacity:1; transform:none }
+
+    /* ===== MEDIA ===== */
+    @media (min-width: 720px){
+      .gallery{ grid-template-columns: repeat(4, 1fr) }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Sticky Top Bar ===== -->
+  <header class="topbar">
+    <div class="topbar-inner wrap" style="padding-bottom:8px">
+      <div>
+        <div class="logo">Наш путь</div>
+        <div class="muted">от первой встречи до сегодня</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px">
+        <button id="themeBtn" aria-label="Переключить тему" title="Тема" class="btn ghost" style="padding:8px 10px">🌓</button>
+      </div>
+    </div>
+    <div class="progress"><i id="progressBar"></i></div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="wrap hero">
+    <div class="stars" aria-hidden="true"></div>
+    <div class="hero-card reveal">
+      <h1>С Днём Рождения, <span id="herName">[Имя]</span>! ✨</h1>
+      <p class="muted">История в прокрутке: что мы чувствовали, чего хотели, что ценим сейчас.</p>
+      <div class="chips">
+        <div class="chip">#нашаистория</div>
+        <div class="chip">#счастьяиогня</div>
+        <div class="chip">#bestof</div>
+      </div>
+    </div>
+    <div class="scroll-cue">Прокрути вниз ⤵</div>
+  </section>
+
+  <main class="wrap">
+    <!-- ===== TIMELINE CHAPTER TEMPLATE ===== -->
+    <!-- Скопируй блок .chapter и меняй содержимое под свои эпизоды -->
+
+    <!-- 1. Первая встреча -->
+    <article class="chapter reveal" data-year="20XX">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Момент: <strong>Первая встреча</strong> • Год: <span>20XX</span></div>
+          <h2 class="h2">Когда всё началось</h2>
+          <p class="text">Здесь опиши, где и как вы познакомились. Добавь детали атмосферы, шутку или случайный момент, который запомнился.</p>
+          <div class="bubbles">
+            <div class="bubble me"><strong>Мои мысли тогда:</strong> «…»</div>
+            <div class="bubble now"><strong>Сейчас думаю:</strong> «…»</div>
+          </div>
+          <div class="gallery" aria-label="Фото воспоминаний">
+            <!-- Замени src на свои картинки (можно локально или ссылки) -->
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=960&auto=format&fit=crop" alt="момент 1" />
+            <img src="https://images.unsplash.com/photo-1495562569060-2eec283d3391?q=80&w=960&auto=format&fit=crop" alt="момент 2" />
+            <img src="https://images.unsplash.com/photo-1520975968314-5f6b2d8a47b0?q=80&w=960&auto=format&fit=crop" alt="момент 3" />
+          </div>
+          <p class="quote">«Короткая цитата или фраза, которая ассоциируется с тем моментом.»</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2. Первый общий мини-приключенческий эпизод -->
+    <article class="chapter reveal" data-year="20XX">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Момент: <strong>Приключение</strong> • Место: <span>…</span></div>
+          <h2 class="h2">Вот здесь нас «заклинило» вместе</h2>
+          <p class="text">Опиши смешной/сложный/трогательный эпизод. Что вы поняли друг о друге? Что стало вашим мемом?</p>
+          <div class="bubbles">
+            <div class="bubble me"><strong>Я тогда:</strong> «…»</div>
+            <div class="bubble now"><strong>Сейчас:</strong> «…»</div>
+          </div>
+          <div class="gallery">
+            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=960&auto=format&fit=crop" alt="фото 1" />
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=960&auto=format&fit=crop" alt="фото 2" />
+            <img src="https://images.unsplash.com/photo-1502724143741-167a2c72e9ae?q=80&w=960&auto=format&fit=crop" alt="фото 3" />
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. Поворотный момент -->
+    <article class="chapter reveal" data-year="20XX">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Момент: <strong>Поворот</strong> • Настроение: <span>…</span></div>
+          <h2 class="h2">С этого момента стало по-настоящему</h2>
+          <p class="text">Что изменилось? Какие выводы ты сделал? Чего захотелось дальше?</p>
+          <div class="bubbles">
+            <div class="bubble me"><strong>Честно:</strong> «…»</div>
+            <div class="bubble now"><strong>Сейчас:</strong> «…»</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. Ностальгия / фото-лента -->
+    <article class="chapter reveal" data-year="20XX">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Сборник моментов</div>
+          <h2 class="h2">Фотолента лучших штук</h2>
+          <p class="text">Можно просто нарезать лучшие моменты. Без слов — только кадры.</p>
+          <div class="gallery">
+            <img src="https://images.unsplash.com/photo-1513652875238-44d16b4dc96b?q=80&w=960&auto=format&fit=crop" alt="" />
+            <img src="https://images.unsplash.com/photo-1523395244744-71f0d2f3c08b?q=80&w=960&auto=format&fit=crop" alt="" />
+            <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?q=80&w=960&auto=format&fit=crop" alt="" />
+            <img src="https://images.unsplash.com/photo-1453227588063-bb302b62f50b?q=80&w=960&auto=format&fit=crop" alt="" />
+            <img src="https://images.unsplash.com/photo-1517817748499-3c7b66e3a34c?q=80&w=960&auto=format&fit=crop" alt="" />
+            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=960&auto=format&fit=crop" alt="" />
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5. Маленькие вещи, за которые ты благодарен -->
+    <article class="chapter reveal" data-year="20XX">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Список благодарностей</div>
+          <h2 class="h2">За что я тебя люблю/ценю</h2>
+          <ul class="text" style="margin:0; padding-left:18px">
+            <li>За смех, который лечит.</li>
+            <li>За терпение к моим приколам.</li>
+            <li>За то, как ты смотришь на мир.</li>
+            <li>… добавь своё …</li>
+          </ul>
+        </div>
+      </div>
+    </article>
+
+    <!-- 6. Сегодня / к дню рождения -->
+    <article class="chapter reveal" data-year="Сегодня">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="line">
+        <div class="card">
+          <div class="time">Сегодня</div>
+          <h2 class="h2">Итог: я рад, что мы — это мы</h2>
+          <p class="text">Коротко о текущем моменте: что ценишь прямо сейчас, чем гордишься, чего желаешь ей на год вперёд.</p>
+          <audio id="song" preload="auto" style="width:100%; margin-top:8px" controls>
+            <!-- Залей свой файл и поменяй src -->
+            <source src="" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== FINAL MESSAGE ===== -->
+    <section class="final reveal" id="final">
+      <div class="card">
+        <div class="time">Финал</div>
+        <div class="big">С Днём Рождения, <span id="herNameFinal">[Имя]</span>! 🎂</div>
+        <p class="text type" id="typeTarget"></p>
+        <div class="actions">
+          <button class="btn" id="shareBtn">Поделиться</button>
+          <button class="btn ghost" id="replayBtn">Ещё раз ✨</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Floating Buttons (theme + music) ===== -->
+  <div class="fab">
+    <button id="musicBtn" title="Музыка" aria-label="Вкл/выкл музыку">🎵</button>
+  </div>
+
+  <script>
+    // ===== Tiny helper: qs =====
+    const $ = (s,scope=document)=>scope.querySelector(s);
+
+    // ===== Progress Bar on scroll =====
+    const pb = $('#progressBar');
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scroll = h.scrollTop;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = Math.min(1, Math.max(0, scroll / max));
+      pb.style.insetInlineEnd = `${(1 - pct) * 100}%`;
+    };
+    document.addEventListener('scroll', onScroll, { passive:true });
+    onScroll();
+
+    // ===== Reveal on view (IntersectionObserver) =====
+    const io = new IntersectionObserver((entries)=>{
+      for(const e of entries){
+        if(e.isIntersecting){
+          e.target.classList.add('show');
+          e.target.closest('.chapter')?.classList.add('active');
+          io.unobserve(e.target);
+        }
+      }
+    }, { threshold:.12 });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // ===== Typewriter for final message =====
+    const typeText = `Спасибо за все наши моменты — маленькие и большие. \nПусть дальше будет ещё громче, ярче и спокойнее там, где надо. \nЯ рядом. Всегда.`;
+    const target = $('#typeTarget');
+    function typeWriter(text){
+      target.textContent = '';
+      let i = 0; const tick = () => {
+        if(i <= text.length){
+          target.textContent = text.slice(0, i);
+          i++; setTimeout(tick, 22);
+        }
+      }; tick();
+    }
+    typeWriter(typeText);
+    $('#replayBtn').addEventListener('click', ()=> typeWriter(typeText));
+
+    // ===== Theme toggle (persist to localStorage) =====
+    const THEME_KEY = 'hb-theme';
+    const themeBtn = $('#themeBtn');
+    function applyTheme(t){ document.body.classList.toggle('light', t === 'light'); }
+    const saved = localStorage.getItem(THEME_KEY) || 'dark';
+    applyTheme(saved);
+    themeBtn.addEventListener('click', ()=>{
+      const next = document.body.classList.contains('light') ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, next); applyTheme(next);
+    });
+
+    // ===== Music toggle =====
+    const music = $('#song');
+    const musicBtn = $('#musicBtn');
+    let wantPlay = false;
+    musicBtn.addEventListener('click', async ()=>{
+      try{
+        if(!music.src){
+          alert('Добавь файл песни в <audio> (атрибут src)');
+          return;
+        }
+        if(music.paused){ await music.play(); wantPlay = true; musicBtn.textContent = '⏸️'; }
+        else{ music.pause(); wantPlay = false; musicBtn.textContent = '🎵'; }
+      }catch(err){ console.log(err); }
+    });
+    document.addEventListener('visibilitychange', ()=>{ if(document.hidden && !music.paused){ music.pause(); musicBtn.textContent='🎵'; }});
+
+    // ===== Web Share API for quick share =====
+    const shareBtn = $('#shareBtn');
+    shareBtn.addEventListener('click', async ()=>{
+      const title = document.title;
+      const text = 'Я сделал(а) для тебя наш персональный сайт-поздравление 💫';
+      try{
+        if(navigator.share){ await navigator.share({ title, text, url: location.href }); }
+        else{ await navigator.clipboard.writeText(location.href); alert('Ссылка скопирована в буфер обмена'); }
+      }catch(e){ /* отменено пользователем — игнор */ }
+    });
+
+    // ===== Quick personalization helper =====
+    // Поставь имя в одном месте, и оно появится в герое и в финале
+    const herName = '[Имя]'; // ← замени
+    $('#herName').textContent = herName;
+    $('#herNameFinal').textContent = herName;
+  </script>
+</body>
+</html>
