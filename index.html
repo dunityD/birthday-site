@@ -35,10 +35,11 @@
     }
         /* ====== ТВОЙ CSS ====== */
 
-    body {
-      margin: 0;
-      font-family: sans-serif;
-    }
+body {
+  background: radial-gradient(circle at 50% 20%, #1a1c2c, #0d0e13, #050506);
+  color: var(--text);
+}
+
 
     /* Фон со звёздным небом */
     #starsCanvas {
@@ -46,8 +47,9 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: -1; /* всегда позади */
-      background: black;
+      background: 0a0a5a;
     }
+
 
     body.light{
       --bg:#fafafa; --surface:#fff; --surface-2:#f4f4f4; --line:#e7e7e7;
@@ -175,21 +177,7 @@
     .close{ width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); cursor:pointer }
 
 
-.card {
-  background: rgba(20,20,20,0.85); /* полупрозрачный серый */
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-1);
-  padding: 18px;
-}
-.chapter .card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  border-radius: inherit;
-  z-index: -1;
-}
+
 
     /* =====================================================================
        MEDIA
@@ -1051,7 +1039,7 @@
       this.y = h;
       this.targetY = Math.random() * h / 2;
       this.speed = 3 + Math.random() * 2;
-      this.color = `hsla(${Math.random() * 360}, 100%, 10%, 0.6)`;
+      this.color = `hsla(${Math.random() * 360}, 100%, 30%, 0.6)`;
       this.exploded = false;
       this.particles = [];
     }
@@ -1148,7 +1136,7 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       stars = [];
-      for (let i = 0; i < 200; i++) {
+      for (let i = 0; i < 25; i++) {
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
