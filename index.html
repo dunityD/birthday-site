@@ -33,7 +33,21 @@
       --fs-small: 13px;
       --ease-1: cubic-bezier(.2,.8,.2,1);
     }
+        /* ====== ТВОЙ CSS ====== */
 
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    /* Фон со звёздным небом */
+    #starsCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1; /* всегда позади */
+      background: black;
+    }
 
     body.light{
       --bg:#fafafa; --surface:#fff; --surface-2:#f4f4f4; --line:#e7e7e7;
@@ -160,6 +174,23 @@
     .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px }
     .close{ width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); cursor:pointer }
 
+
+.card {
+  background: rgba(20,20,20,0.85); /* полупрозрачный серый */
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+  padding: 18px;
+}
+.chapter .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  border-radius: inherit;
+  z-index: -1;
+}
+
     /* =====================================================================
        MEDIA
        ===================================================================== */
@@ -170,6 +201,7 @@
   </style>
 </head>
 <body>
+  <canvas id="starsCanvas"></canvas>
   <!-- =================================================================== -->
   <!-- TOP BAR                                                             -->
   <!-- =================================================================== -->
@@ -327,17 +359,25 @@
           </div>
         </section>  
 
-        <section class="chapter reveal" data-tag="поэзия,любовь,вдохновение" data-year="2025">
+        <section class="chapter reveal" data-tag="поэзия,любовь,вдохновение" data-year="4">
           <div class="dot-col"><div class="dot"></div></div>
           <div class="card">
             <div class="time">
-              <span class="badge">Лето</span> <span>•</span> <span>Вдохновение</span>
+              <span class="badge">Стих</span> <span>•</span> <span>Вдохновение</span>
             </div>
-            <h2 class="h2">СТИХ</h2>
+            <h2 class="h2">Стихи для тебя</h2>
             <p class="text">
               Твои стихи вдохновляют меня. Я люблю, как они трогают душу, и решил сам написать:<br><br>
-               ТУТ БУДЕТ СТИХ
 
+              Ты — мой смех и моё молчание,<br>
+              В каждом дне находишь сияние.<br>
+              Даже там, где темно и пусто,<br>
+              С тобой всё просто, легко и чувство.<br><br>
+
+              Я люблю тебя — в этом весь смысл,<br>
+              Ты — мой ответ, мой самый чистый.<br>
+              И если искать, что делает «мы»,  <br>
+              Ответ один: это всё — ты.
             </p>
           </div>
         </section>
@@ -398,6 +438,10 @@
         </section>
 
 
+
+
+
+
         <section class="chapter reveal" data-tag="вкус" data-year="8">
           <div class="dot-col"><div class="dot"></div></div>
           <div class="card">
@@ -448,7 +492,114 @@
         </section>
 
 
-       <section class="chapter reveal" data-tag="планы" data-year="10">
+
+<section class="chapter reveal" data-tag="игры" data-year="10" id="guess-who">
+  <div class="dot-col"><div class="dot"></div></div>
+  <div class="card">
+    <div class="time"><span class="badge">Мини-игра</span> <span>•</span> <span>Кто это сказал?</span></div>
+    <h2 class="h2">Угадай, кто это сказал — я или ты</h2>
+    <p class="text">Жми на вариант и проверяй память.</p>
+
+    <ul class="text" style="list-style:none; padding-left:0; margin:12px 0 0" id="guessList">
+      <li class="guess-item" data-answer="ты" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Дат!»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="ты" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«ХИХИХИХХИИХИХХ»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="я" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Хочешь белый сникерс?)»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="я" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Пупс»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="ты" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Дура»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="я" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Клоп»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="ты" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Призрак негра белый или чёрный?»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="ты" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«144 лепестка»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="я" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Верю»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="я">Я</button>
+          <button class="btn" data-choice="ты">Ты</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+
+      <li class="guess-item" data-answer="мы" style="margin:10px 0; border:1px solid rgba(0,0,0,.08); border-radius:10px; padding:12px;">
+        <div class="quote">«Я тебя люблю»</div>
+        <div class="actions" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+          <button class="btn" data-choice="мы">Мы</button>
+          <span class="result" style="margin-left:8px; font-weight:600;"></span>
+        </div>
+      </li>
+    </ul>
+
+    <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+      <button class="btn primary" id="guessReset">Сбросить</button>
+      <span id="guessScore" class="text" style="opacity:.9;">Правильных: 0</span>
+    </div>
+  </div>
+</section>
+
+
+       <section class="chapter reveal" data-tag="планы" data-year="11">
         <div class="dot-col"><div class="dot"></div></div>
         <div class="card">
           <div class="time"><span class="badge">Планы</span> <span>•</span> <span>Куда дальше</span></div>
@@ -464,7 +615,7 @@
         </div>
       </section>
 
-      <section class="chapter reveal" data-tag="благодарности" data-year="11">
+      <section class="chapter reveal" data-tag="благодарности" data-year="12">
         <div class="dot-col"><div class="dot"></div></div>
         <div class="card">
           <div class="time"><span class="badge">Благодарность</span> <span>•</span> <span>Список тёплых причин</span></div>
@@ -536,22 +687,31 @@
       </section>
 
 
+<!-- Финал -->
+<section class="chapter reveal" data-tag="финал" data-year="итог" id="final">
+  <div class="dot-col"><div class="dot"></div></div>
+  <div class="card" style="position:relative; overflow:hidden; color:white; background:black;">
+    
+    <!-- Canvas для звёзд -->
+    <canvas id="stars" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;"></canvas>
+    <!-- Canvas для фейерверков -->
+    <canvas id="fireworks" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;"></canvas>
+    <!-- затемняющий слой для читаемости -->
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.25); z-index:2;"></div>
 
-
-      <!-- Финал -->
-      <section class="chapter reveal" data-tag="финал" data-year="итог" id="final">
-        <div class="dot-col"><div class="dot"></div></div>
-        <div class="card">
-          <div class="time"><span class="badge">Финал</span></div>
-          <div class="big">С Днём Рождения, <span id="herNameFinal">Оксана!!!!</span>!</div>
-          <p class="text type" id="typeTarget"></p>
-          <div class="actions">
-            <button class="btn primary" id="shareBtn2">Поделиться сайтом</button>
-            <button class="btn" id="replayBtn">Ещё раз напечатать</button>
-          </div>
-        </div>
-      </section>
-
+    <!-- Контент -->
+    <div class="time" style="position:relative; z-index:3;"><span class="badge">Финал</span></div>
+    <div class="big" style="position:relative; z-index:3;">
+      С Днём Рождения, <span id="herNameFinal">Оксана!!!!</span>!
+    </div>
+    <p class="text type" id="typeTarget" style="position:relative; z-index:3;"></p>
+    <div class="actions" style="position:relative; z-index:3;">
+      <button class="btn primary" id="shareBtn2">Поделиться сайтом</button>
+      <button class="btn" id="replayBtn">Ещё раз напечатать</button>
+    </div>
+  </div>
+</section>
     </article>
   </main>
 
@@ -580,6 +740,7 @@
   <!-- =================================================================== -->
   <!-- SCRIPTS                                                             -->
   <!-- =================================================================== -->
+  
   <script>
     // ====================================================================
     // SMALL HELPERS
@@ -651,7 +812,7 @@
     // ====================================================================
     async function tryShare(){
       const title = document.title;
-      const text = 'Я сделал для тебя наш персональный сайт-поздравление';
+      const text = 'Я сделал   для тебя наш персональный сайт-поздравление';
       try{
         if(navigator.share){ await navigator.share({ title, text, url: location.href }); }
         else{ await navigator.clipboard.writeText(location.href); alert('Ссылка скопирована'); }
@@ -753,5 +914,289 @@
     $('#herName').textContent = herName;
     $('#herNameFinal').textContent = herName;
   </script>
+<script>
+  // ====== ИГРА: Угадай, кто сказал ======
+  (function() {
+    const list = document.getElementById('guessList');
+    if (!list) return;
+
+    let score = 0;
+    let answered = 0;
+    const total = list.querySelectorAll('.guess-item').length;
+    const scoreEl = document.getElementById('guessScore');
+
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-choice]');
+      if (!btn) return;
+
+      const item = btn.closest('.guess-item');
+      const result = item.querySelector('.result');
+      const correct = item.dataset.answer;
+      const choice = btn.dataset.choice;
+
+      if (item.dataset.done === '1') return;
+
+      if (choice === correct) {
+        result.textContent = 'Верно!';
+        result.style.color = 'green';
+        item.style.borderColor = 'rgba(0,128,0,.25)';
+        score++;
+      } else {
+        result.textContent = 'Мимо 🙃';
+        result.style.color = 'crimson';
+        item.style.borderColor = 'rgba(220,20,60,.25)';
+      }
+
+      item.dataset.done = '1';
+      answered++;
+      scoreEl.textContent = `Правильных: ${score}/${total}`;
+    });
+
+    const reset = document.getElementById('guessReset');
+    reset?.addEventListener('click', () => {
+      list.querySelectorAll('.guess-item').forEach(item => {
+        item.dataset.done = '0';
+        item.style.borderColor = 'rgba(0,0,0,.08)';
+        const res = item.querySelector('.result');
+        if (res) { res.textContent = ''; res.style.color = ''; }
+      });
+      score = 0; answered = 0;
+      scoreEl.textContent = `Правильных: 0/${total}`;
+    });
+  })();
+</script>
+<!-- Финал -->
+<section class="chapter reveal" data-tag="финал" data-year="итог" id="final">
+  <div class="dot-col"><div class="dot"></div></div>
+  <div class="card" style="position:relative; overflow:hidden; color:white;">
+    
+    <!-- затемняющий слой -->
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;
+                background:rgba(0,0,0,0.35); z-index:1;"></div>
+
+    <!-- Канвас для фейерверков -->
+    <canvas id="fireworks" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;"></canvas>
+
+    <!-- Контент -->
+    <div class="time" style="position:relative; z-index:2;"><span class="badge">Финал</span></div>
+    <div class="big" style="position:relative; z-index:2;">
+      С Днём Рождения, <span id="herNameFinal">Оксана!!!!</span>!
+    </div>
+    <p class="text type" id="typeTarget" style="position:relative; z-index:2;"></p>
+    <div class="actions" style="position:relative; z-index:2;">
+      <button class="btn primary" id="shareBtn2">Поделиться сайтом</button>
+      <button class="btn" id="replayBtn">Ещё раз напечатать</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  const starsCanvas = document.getElementById("stars");
+  const starsCtx = starsCanvas.getContext("2d");
+  let sw = starsCanvas.width = starsCanvas.offsetWidth;
+  let sh = starsCanvas.height = starsCanvas.offsetHeight;
+
+  window.addEventListener("resize", () => {
+    sw = starsCanvas.width = starsCanvas.offsetWidth;
+    sh = starsCanvas.height = starsCanvas.offsetHeight;
+  });
+
+  // Генерация звёзд
+  const stars = [];
+  for (let i = 0; i < 150; i++) {
+    stars.push({
+      x: Math.random() * sw,
+      y: Math.random() * sh,
+      r: Math.random() * 1.5,
+      alpha: Math.random(),
+      delta: Math.random() * 0.02 + 0.005
+    });
+  }
+
+  function drawStars() {
+    starsCtx.clearRect(0, 0, sw, sh);
+    stars.forEach(s => {
+      s.alpha += s.delta;
+      if (s.alpha <= 0 || s.alpha >= 1) s.delta = -s.delta;
+      starsCtx.globalAlpha = s.alpha;
+      starsCtx.fillStyle = "white";
+      starsCtx.beginPath();
+      starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      starsCtx.fill();
+    });
+    starsCtx.globalAlpha = 1;
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+})();
+</script>
+
+<script>
+(function() {
+  const canvas = document.getElementById("fireworks");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  let w = canvas.width = canvas.offsetWidth;
+  let h = canvas.height = canvas.offsetHeight;
+  window.addEventListener("resize", () => {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  });
+
+  class Firework {
+    constructor() {
+      this.x = Math.random() * w;
+      this.y = h;
+      this.targetY = Math.random() * h / 2;
+      this.speed = 3 + Math.random() * 2;
+      this.color = `hsla(${Math.random() * 360}, 100%, 10%, 0.6)`;
+      this.exploded = false;
+      this.particles = [];
+    }
+    update() {
+      if (!this.exploded) {
+        this.y -= this.speed;
+        if (this.y <= this.targetY) {
+          this.exploded = true;
+          for (let i = 0; i < 50; i++) {
+            this.particles.push(new Particle(this.x, this.y, this.color));
+          }
+        }
+      } else {
+        this.particles.forEach(p => p.update());
+        this.particles = this.particles.filter(p => p.alpha > 0);
+      }
+    }
+    draw() {
+      if (!this.exploded) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      } else {
+        this.particles.forEach(p => p.draw());
+      }
+    }
+  }
+
+  class Particle {
+    constructor(x, y, color) {
+      this.x = x;
+      this.y = y;
+      this.color = color;
+      this.angle = Math.random() * 2 * Math.PI;
+      this.speed = Math.random() * 5;
+      this.alpha = 1;
+    }
+    update() {
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed + 0.5;
+      this.alpha -= 0.02;
+    }
+    draw() {
+      ctx.globalAlpha = this.alpha * 0.6;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  let fireworks = [];
+  let started = false;
+
+  function loop() {
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(0, 0, w, h);
+
+    if (Math.random() < 0.05) {
+      fireworks.push(new Firework());
+    }
+
+    fireworks.forEach(f => {
+      f.update();
+      f.draw();
+    });
+    fireworks = fireworks.filter(f => !f.exploded || f.particles.length > 0);
+
+    requestAnimationFrame(loop);
+  }
+
+  // Запуск один раз при показе финала
+  const finalSection = document.getElementById("final");
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !started) {
+        started = true;
+        loop();
+      }
+    });
+  }, { threshold: 0.5 });
+
+  observer.observe(finalSection);
+})();
+</script>
+<script>
+    const canvas = document.getElementById("starsCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let stars = [];
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = [];
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.5,
+          alpha: Math.random(),
+          speed: 0.002 + Math.random() * 0.003
+        });
+      }
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        s.alpha += s.speed;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${0.5 + 0.5 * Math.sin(s.alpha)})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    function shootingStar() {
+      const startX = Math.random() * canvas.width;
+      const startY = Math.random() * canvas.height / 2;
+      let x = startX, y = startY;
+      const len = 200, speed = 4;
+
+      function animate() {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - len, y + len);
+        ctx.strokeStyle = "rgba(255,255,255,0.7)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        x += speed; y -= speed;
+        if (x < canvas.width && y > 0) {
+          requestAnimationFrame(animate);
+        }
+      }
+      animate();
+    }
+    setInterval(shootingStar, 5000);
+  </script>
+</body>
 </body>
 </html>
